@@ -31,5 +31,33 @@ namespace Domain.Entities
         {
             _events.Clear();
         }
+
+
+        private static readonly ConstructorInfo CTor;
+
+        static BaseAggregateRoot()
+        {
+            var aggregateType = typeof(TA);
+            CTor = aggregateType.GetConstructor(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public,
+                null, new Type[0], new ParameterModifier[0]);
+            if (null == CTor)
+                throw new InvalidOperationException($"Unable to find required private parameterless constructor for Aggregate of type '{aggregateType.Name}'");
+        }
+
+        public static TA Create(IEnumerable<IDomainEvent<TKey>> events)
+        {
+            if (null == events || !events.Any())
+                throw new ArgumentNullException(nameof(events));
+            var result = (TA)CTor.Invoke(new object[0]);
+
+            var baseAggregate = result as BaseAggregateRoot<TA, TKey>;
+            if (baseAggregate != null)
+                foreach (var @event in events)
+                    baseAggregate.AddEvent(@event);
+
+            result.ClearEvents();
+
+            return result;
+        }
     }
 }

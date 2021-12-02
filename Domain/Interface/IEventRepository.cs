@@ -5,11 +5,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Domain.Implementations
+namespace Domain.Interface
 {
-    public interface IEventService<TA, TKey> where TA : class, IAggregateRoot<TKey>
+    public interface IEventRepository<TA, TKey> where TA: class, IAggregateRoot<TKey>
     {
-        Task PersistAsync(TA aggragate);
+        Task AppendAsync(TA aggregate);
         Task<TA> RehydrateAsync(TKey key);
     }
 }
