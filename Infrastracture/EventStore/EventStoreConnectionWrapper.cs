@@ -11,10 +11,10 @@ namespace Infrastracture.EventStore
     public class EventStoreConnectionWrapper : IEventStoreConnectionWrapper, IDisposable
     {
         private readonly Lazy<Task<IEventStoreConnection>> _connection;
-        private readonly ILogger<IEventStoreConnection> _logger;
+        private readonly ILogger<IEventStoreConnectionWrapper> _logger;
         private readonly Uri _uri;
 
-        public EventStoreConnectionWrapper(Uri uri, ILogger<IEventStoreConnection> logger)
+        public EventStoreConnectionWrapper(Uri uri, ILogger<IEventStoreConnectionWrapper> logger)
         {
             _uri = uri;
             _logger = logger;
