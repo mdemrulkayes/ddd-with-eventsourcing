@@ -16,9 +16,9 @@ namespace Domain.Models
         public bool IsCompleted { get; private set; } = false;
         public string CreatedBy { get; private set; } = string.Empty;
         private Task() { }
-        public void CreateTask(string title, string description, string createdBy)
+        public Task(Guid id, string title, string description, string createdBy) : base(id)
         {
-            if (Version >= 0)
+            if (Version > 0)
             {
                 throw new Exception("Task Already Created");
             }

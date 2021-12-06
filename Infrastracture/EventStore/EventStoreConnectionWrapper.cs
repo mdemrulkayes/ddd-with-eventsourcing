@@ -39,7 +39,7 @@ namespace Infrastracture.EventStore
                  .UseConsoleLogger()
                  .DisableTls()
                 .Build();
-            var connection = EventStoreConnection.Create(settings, _uri);
+            var connection = EventStoreConnection.Create(settings, _uri, "Meetup");
 
             connection.ErrorOccurred += async (s, e) =>
             {

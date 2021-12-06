@@ -6,12 +6,17 @@ namespace Domain.Implementation
     public class EventService<TA, TKey> : IEventService<TA, TKey> where TA : class, IAggregateRoot<TKey>
     {
         private readonly IEventRepository<TA, TKey> _repository;
-        private readonly IEventProducer<TA, TKey> _producer;
+        //private readonly IEventProducer<TA, TKey> _producer;
 
-        public EventService(IEventRepository<TA, TKey> repository, IEventProducer<TA, TKey> producer)
+        //public EventService(IEventRepository<TA, TKey> repository, IEventProducer<TA, TKey> producer)
+        //{
+        //    _repository = repository;
+        //    _producer = producer;
+        //}
+
+        public EventService(IEventRepository<TA, TKey> repository)
         {
             _repository = repository;
-            _producer = producer;
         }
 
         public async Task PersistAsync(TA aggragate)
@@ -24,7 +29,7 @@ namespace Domain.Implementation
 
             await _repository.AppendAsync(aggragate);
             //Need to dispatch the Event into any Service Bus such as Azure, Kafka, RabbitMQ
-            await _producer.DispatchAsync(aggragate);
+            //await _producer.DispatchAsync(aggragate);
 
             aggragate.ClearEvents();
         }

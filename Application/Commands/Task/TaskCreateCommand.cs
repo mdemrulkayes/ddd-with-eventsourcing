@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Application.Commands.Task
 {
-    public class TaskCreateCommand : INotification
+    public class TaskCreateCommand : IRequest<int>
     {
         public TaskCreateCommand(Guid id, string title, string description, string craetedBy)
         {
@@ -17,13 +17,13 @@ namespace Application.Commands.Task
             this.Description = description;
             this.CreatedBy = craetedBy;
         }
-        public Guid Id { get; }
-        public string Title { get; }
-        public string Description { get; }
-        public string CreatedBy { get; }
+        public Guid Id { get; set; }
+        public string Title { get; set; }
+        public string Description { get; set; }
+        public string CreatedBy { get; set; }
     }
 
-    public class TaskCreateCommandHandler : INotificationHandler<TaskCreateCommand>
+    public class TaskCreateCommandHandler : IRequestHandler<TaskCreateCommand, int>
     {
         private readonly IEventService<Domain.Models.Task, Guid> _eventService;
 
@@ -32,13 +32,32 @@ namespace Application.Commands.Task
             _eventService = eventService;
         }
 
-        public async System.Threading.Tasks.Task Handle(TaskCreateCommand notification, CancellationToken cancellationToken)
+        public async Task<int> Handle(TaskCreateCommand request, CancellationToken cancellationToken)
         {
-            var aggragate = await _eventService.RehydrateAsync(notification.Id);
+            var task = new Domain.Models.Task(request.Id, request.Title, request.Description, request.CreatedBy);
 
-            aggragate.CreateTask(notification.Title, notification.Description, notification.CreatedBy);
-
-            await _eventService.PersistAsync(aggragate);
+            await _eventService.PersistAsync(task);
+            return 1;
         }
     }
 }
+
+
+//using MediatR;
+//using System.Threading;
+//using System.Threading.Tasks;
+
+//namespace Application.Commands.Task
+//{
+//    public class TaskCreateCommand : IRequest<bool>
+//    {
+//        public string Name { get; set; }
+//        public class TaskCreateCommandHandler : IRequestHandler<TaskCreateCommand, bool>
+//        {
+//            public Task<bool> Handle(TaskCreateCommand request, CancellationToken cancellationToken)
+//            {
+//                return System.Threading.Tasks.Task.FromResult(true);
+//            }
+//        }
+//    }
+//}

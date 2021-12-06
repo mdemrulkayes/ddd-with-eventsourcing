@@ -1,4 +1,6 @@
-namespace API
+using System;
+
+namespace APIV2
 {
     public class WeatherForecast
     {
@@ -8,6 +10,6 @@ namespace API
 
         public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
 
-        public string? Summary { get; set; }
+        public string Summary { get; set; }
     }
 }
