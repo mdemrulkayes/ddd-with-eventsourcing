@@ -1,4 +1,5 @@
-﻿using Domain.Entities;
+﻿using Domain;
+using Domain.Entities;
 using Domain.Interface;
 using EventStore.ClientAPI;
 using Infrastracture.EventStore;
@@ -98,7 +99,7 @@ namespace Infrastracture.Persistance
         private static readonly Newtonsoft.Json.JsonSerializerSettings JsonSerializerSettings = new Newtonsoft.Json.JsonSerializerSettings()
         {
             ConstructorHandling = Newtonsoft.Json.ConstructorHandling.AllowNonPublicDefaultConstructor,
-            ContractResolver = new CamelCasePropertyNamesContractResolver()
+            ContractResolver = new PrivateSetterContractResolver()
         };
 
         public IDomainEvent<TKey> Deserialize<TKey>(string type, string data)

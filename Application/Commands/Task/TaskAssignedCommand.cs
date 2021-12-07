@@ -31,6 +31,11 @@ namespace Application.Commands.Task
             public async Task<int> Handle(TaskAssignedCommand request, CancellationToken cancellationToken)
             {
                 var data = await _eventService.RehydrateAsync(request.Id);
+                if (data == null)
+                    throw new Exception("Invalid event Id");
+
+                data.AssignTask(request.AssignedTo);
+                await _eventService.PersistAsync(data);
                 return 1;
             }
         }

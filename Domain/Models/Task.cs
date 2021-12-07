@@ -12,9 +12,8 @@ namespace Domain.Models
     {
         public string Title { get; private set; }
         public string Description { get; private set; }
-        public string AssignedTo { get; private set; } = string.Empty;
-        public bool IsCompleted { get; private set; } = false;
-        public string CreatedBy { get; private set; } = string.Empty;
+        public string CreatedBy { get; private set; }
+        public string AssignedTo { get; private set; }
         private Task() { }
         public Task(Guid id, string title, string description, string createdBy) : base(id)
         {
@@ -28,6 +27,11 @@ namespace Domain.Models
 
             this.AddEvent(new CreatedTask(this));
         }
+
+        public void AssignTask(string assignedTo)
+        {
+            this.AddEvent(new AssignedTask(this, assignedTo));
+        }
         protected override void Apply(IDomainEvent<Guid> @event)
         {
             switch (@event)
@@ -35,7 +39,13 @@ namespace Domain.Models
                 case CreatedTask createdTask:
                     OnCreatedTask(createdTask);
                     break;
+                case AssignedTask assignedTask: OnAssignedTask(assignedTask); break;
             }
+        }
+
+        private void OnAssignedTask(AssignedTask assignedTask)
+        {
+            this.AssignedTo = assignedTask.AssignedTo;
         }
 
         private void OnCreatedTask(CreatedTask createdTask)
